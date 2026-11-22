@@ -1,0 +1,23 @@
+# Docker Compose: DeepSeek Self-Hosted Gateway Stack
+# Connects self-hosted Web UI & Agent workflows to APIVALE DeepSeek Gateway
+
+services:
+  # Option A: Lightweight Web UI (NextChat)
+  nextchat:
+    image: yidadaa/chatgpt-next-web:latest
+    container_name: deepseek-nextchat
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - OPENAI_API_KEY=${APIVALE_API_KEY}
+      - BASE_URL=https://apivale.com
+      - CUSTOM_MODELS=-all,+deepseek-chat,+deepseek-reasoner,+qwen3.8-max,+glm-5.3-flash
+      - DEFAULT_MODEL=deepseek-chat
+      - CODE=${ACCESS_CODE:-}
+    networks:
+      - deepseek-net
+
+networks:
+  deepseek-net:
+    driver: bridge
